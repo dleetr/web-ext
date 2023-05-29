@@ -4,7 +4,6 @@
  * This module provide an ExtensionRunner subclass that manage an extension executed
  * in a Chromium-based browser instance.
  */
-
 import path from 'path';
 
 import fs from 'fs-extra';
@@ -151,17 +150,20 @@ export class ChromiumExtensionRunner {
 
     const chromeFlags = [...DEFAULT_CHROME_FLAGS];
     let startingUrl;
-    var specialStartingUrls = [];
+    let specialStartingUrls = [];
     if (this.params.startUrl) {
       const startingUrls = Array.isArray(this.params.startUrl) ?
         this.params.startUrl : [this.params.startUrl];
 
-      // Extract URLs starting with chrome:// from startingUrls and let bg.js open them instead
+      // Extract urls that can only be opened by bg.js
+      const specialUrlFormats = ['chrome://', 'chrome-extension://'];
       specialStartingUrls = startingUrls.filter(
-        (item) => (item.toLowerCase().startsWith('chrome://')));
+        (item) => specialUrlFormats.some((format) => item.toLowerCase().startsWith(format))
+      );
 
       const strippedStartingUrls = startingUrls.filter(
-        (item) => !(item.toLowerCase().startsWith('chrome://')));
+        (item) => !(specialUrlFormats.some((format) => item.toLowerCase().startsWith(format)))
+      );
 
       startingUrl = strippedStartingUrls.shift();
       chromeFlags.push(...strippedStartingUrls);

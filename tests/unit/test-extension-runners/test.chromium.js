@@ -119,7 +119,8 @@ describe('util/extension-runners/chromium', async () => {
     + '& excludes them from args', async () => {
     const {params} = prepareExtensionRunnerParams({
       params: {startUrl:
-        ['url1', 'chrome://version', 'url2', 'chrome://extensions']},
+        ['url1', 'chrome://version', 'url2', 'chrome://extensions', 'chrome-extension://fakeExtensionId/'],
+      },
     });
     const runnerInstance = new ChromiumExtensionRunner(params);
     await runnerInstance.run();
@@ -130,7 +131,7 @@ describe('util/extension-runners/chromium', async () => {
 
     const bgScript = path.join(reloadManagerExtension, 'bg.js');
     const expectedStr =
-      'const chromeTabList = ["chrome://version","chrome://extensions"]';
+      'const chromeTabList = ["chrome://version","chrome://extensions","chrome-extension://fakeExtensionId/"]';
     assert.include(await fs.readFile(
       bgScript, 'utf8'), expectedStr, 'bg.js does not contain special urls');
 
