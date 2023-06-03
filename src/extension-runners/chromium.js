@@ -271,8 +271,7 @@ export class ChromiumExtensionRunner {
     });
   }
 
-  async createReloadManagerExtension(
-    specialStartingUrls: Array<string>): Promise<string> {
+  async createReloadManagerExtension(specialStartingUrls) {
     const tmpDir = new TempDir();
     await tmpDir.create();
     this.registerCleanup(() => tmpDir.remove());
